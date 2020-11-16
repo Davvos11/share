@@ -1,4 +1,4 @@
-import app from "./express"
+import app from "./express.js";
 
 const port = 8000
 
