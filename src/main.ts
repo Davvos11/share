@@ -1,7 +1,38 @@
 import app from "./express.js";
+import {startTimer} from "./database.js";
 
-const port = 8000
+import {sendToCdn} from "./cdn.js";
 
-app.listen(port, () => {
-    console.log(`Listening at http://localhost:${port}`)
+const PORT = 8000
+const FILE_EXPIRE = 7 * 24 * 3600
+
+startTimer()
+
+app.post('/upload', async (req, res) => {
+    if(!req.files || !req.files.files) {
+        res.status(400).send("No files provided");
+    } else {
+        let data;
+        const files = req.files.files
+
+        try {
+            // Send files to CDN and get URLs
+            data = await sendToCdn(files, FILE_EXPIRE)
+            // Get expire time
+            const expiresAt = Date.now() * 1000 + FILE_EXPIRE
+        } catch (err) {
+            const msg = err.error ? err.error : err
+            const code = err.statusCode ? err.statusCode : 500
+
+            console.error(msg)
+            return res.status(code).send(msg)
+        }
+
+        // send response
+        res.send(data);
+    }
+})
+
+app.listen(PORT, () => {
+    console.log(`Listening at http://localhost:${PORT}`)
 })
