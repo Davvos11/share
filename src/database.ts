@@ -42,8 +42,8 @@ export function getUrl(id: string) {
  * Remove all links from the database that have expired
  */
 function removeExpiredLinks() {
-    const timestamp = Date.now() * 1000;
-    return db.run("DELETE FROM links WHERE expires < ?", [timestamp])
+    const timestamp = Date.now() / 1000;
+    return db.run("DELETE FROM links WHERE links.expires < ?", [timestamp])
 }
 
 export function startTimer() {
