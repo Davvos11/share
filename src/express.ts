@@ -3,6 +3,7 @@ import morgan from "morgan"
 import cors from "cors"
 import bodyParser from "body-parser"
 import fileUpload from "express-fileupload"
+import path from "path"
 
 // Initialise Express
 const app = express()
@@ -18,5 +19,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload({
     createParentPath: true
 }));
+
+// Serve the static files from the React app
+app.use(express.static(path.join(path.dirname('..'), 'client/build')));
 
 export default app;
