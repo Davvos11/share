@@ -1,6 +1,8 @@
 import app from "./express.js";
 import * as db from "./database.js";
 
+import rp from "request-promise";
+
 import {sendToCdn} from "./cdn.js";
 import {generateUrlsForFiles} from "./url.js";
 
@@ -32,10 +34,24 @@ app.post('/upload', async (req, res) => {
         // Generate URLS
         const urls = await generateUrlsForFiles(data, expiresAt, db)
 
-        // send response
-        res.send(urls);
+        // send response (as full urls)
+        res.send(urls.map(url => {return `${req.protocol}://${req.get('host')}/${url}`}));
     }
 })
+
+app.get('/:id', (async (req, res) => {
+    // Get CDN URL
+    const url = await db.getUrl(req.params.id)
+    // Check if it is not null
+    if (url === null) {
+        return res.status(404).send(`${req.params.id} not found, it might have expired`)
+    }
+    const options = {
+        method: 'GET',
+        uri: String(url)
+    }
+    rp(options).pipe(res)
+}))
 
 app.listen(PORT, () => {
     console.log(`Listening at http://localhost:${PORT}`)
