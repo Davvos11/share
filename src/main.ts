@@ -1,12 +1,13 @@
 import app from "./express.js";
-import {startTimer} from "./database.js";
+import * as db from "./database.js";
 
 import {sendToCdn} from "./cdn.js";
+import {generateUrlsForFiles} from "./url.js";
 
 const PORT = 8000
 const FILE_EXPIRE = 7 * 24 * 3600
 
-startTimer()
+db.startTimer()
 
 app.post('/upload', async (req, res) => {
     if(!req.files || !req.files.files) {
@@ -18,8 +19,6 @@ app.post('/upload', async (req, res) => {
         try {
             // Send files to CDN and get URLs
             data = await sendToCdn(files, FILE_EXPIRE)
-            // Get expire time
-            const expiresAt = Date.now() * 1000 + FILE_EXPIRE
         } catch (err) {
             const msg = err.error ? err.error : err
             const code = err.statusCode ? err.statusCode : 500
@@ -28,8 +27,13 @@ app.post('/upload', async (req, res) => {
             return res.status(code).send(msg)
         }
 
+        // Get expire time
+        const expiresAt = Date.now() / 1000 + FILE_EXPIRE
+        // Generate URLS
+        const urls = await generateUrlsForFiles(data, expiresAt, db)
+
         // send response
-        res.send(data);
+        res.send(urls);
     }
 })
 

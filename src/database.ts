@@ -34,7 +34,7 @@ export function addFile(id: string, cdnUrl: string, expires: number) {
 
 export function getUrl(id: string) {
     return db.get("SELECT cdn_url FROM links WHERE id = ?", [id]).then(r => {
-        return r.cdn_url
+        return r === undefined ? null : r.cdn_url
     })
 }
 
