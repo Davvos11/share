@@ -5,6 +5,7 @@ import path from "path";
 const DICT_LOCATION = path.join(path.dirname('..'), 'dictionary')
 
 const DE = "de";
+const NICE = "nice"
 const NOUNS = await readFileIntoArray(path.join(DICT_LOCATION, 'nouns.txt'));
 const ADJECTIVES = await readFileIntoArray(path.join(DICT_LOCATION, 'adjectives.txt'));
 
@@ -47,17 +48,14 @@ export async function generateUrlsForFiles(cdnUrls: string[], expiresAt: number,
 
 function generateUrl() {
     // Insert some 'de'
-    let result = de();
+    let result = de(0.01);
 
-    // Insert one or two adjectives
-    result += capitalise(randomItem(ADJECTIVES))
-    if (random.int(0, 10) > 7) {
-        result += capitalise(randomItem(ADJECTIVES))
-    }
+    // Insert one, two or three adjectives
+    result += adjectives()
 
     // 50% chance to insert some 'de'
     if (random.boolean()) {
-        result += de()
+        result += de(0.05)
     }
 
     // Insert a random noun
@@ -66,11 +64,31 @@ function generateUrl() {
     return result
 }
 
-function de() {
-    // 20% chance to insert multiple 'de'
-    let amount = random.int(1, 10) - 7;
-    amount = Math.max(1, amount);
-    return capitalise(DE).repeat(amount)
+function de(multiChance: number) {
+    let result = capitalise(DE)
+    // chance to insert multiple 'de'
+    const multiply = random.float(0, 1) < multiChance;
+    if (multiply) {
+        result += de(multiChance*0.9)
+    }
+    return result
+}
+
+function adjectives() {
+    let result = capitalise(getAdjective())
+    if (random.float(0, 1) < 0.2) {
+        if (random.float(0, 1) < 0.5) result += DE
+        result += capitalise(getAdjective(0.5))
+        if (random.float(0, 1) < 0.3) {
+            result += capitalise(getAdjective(0.1))
+        }
+    }
+
+    return result
+}
+
+function getAdjective(niceChance: number = 0.4) {
+    return (random.float(0, 1) < niceChance) ? NICE : randomItem(ADJECTIVES)
 }
 
 const capitalise = (s: string) => {return s.charAt(0).toUpperCase() + s.slice(1)}
