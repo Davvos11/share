@@ -1,3 +1,13 @@
 tools
+tool
+toolie
 units
+unit
 devices
+device
+charlie
+camping
+burger
+foodjes
+foodje
+thonk
