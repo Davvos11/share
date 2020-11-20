@@ -1,6 +1,7 @@
 import React, {useCallback} from 'react';
 import styled from 'styled-components';
 import {useDropzone} from "react-dropzone";
+import {addUrl, showError} from "./Results";
 
 export function UploadButton(props){
     const onDrop = useCallback(acceptedFiles => {
@@ -14,8 +15,11 @@ export function UploadButton(props){
         fetch('/upload', {
             method: 'POST',
             body: formData
-        }).then(r => {
-            console.debug(r)
+        }).then(r => r.json()).then(data => {
+            data.forEach(url => addUrl(url))
+        }).catch(e => {
+            console.error(e)
+            showError(String(e))
         });
     }, [])
 

@@ -3,6 +3,7 @@ import * as Bootstrap from 'react-bootstrap'
 
 import './App.css'
 import {UploadButton} from "./UploadButton";
+import {Results} from "./Results";
 
 export class App extends React.Component {
     render() {
@@ -17,8 +18,12 @@ export class App extends React.Component {
                         </Bootstrap.Col>
                         <Bootstrap.Col><UploadButton /></Bootstrap.Col>
                     </Bootstrap.Row>
+                    <Bootstrap.Row>
+                        <Results/>
+                    </Bootstrap.Row>
                 </Bootstrap.Jumbotron>
             </Bootstrap.Col>
         );
     }
+
 }
