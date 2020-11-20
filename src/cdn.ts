@@ -6,6 +6,13 @@ import path from 'path'
 
 const CDN_NAME = 'share'
 const SECRET_FILE = path.join(path.dirname('..'), 'secret.txt')
+const COOKIE_NAME = 'user_sid'
+
+const CDN_ROOT = 'https://cdn.dovatvis.nl'
+const CDN_PATHS = {
+    upload: CDN_ROOT+'/upload',
+    login: CDN_ROOT+'/login'
+}
 
 const cookieJar = rp.jar()
 
@@ -16,14 +23,14 @@ const cookieJar = rp.jar()
  */
 export async function sendToCdn(files: UploadedFile | UploadedFile[], expires: number) {
     // Check if we are logged in (i.e. if the user_sid cookie exists)
-    if (!cookieJar.getCookies('https://cdn.dovatvis.nl').map(c => c.key).includes("user_sid")) {
+    if (!cookieJar.getCookies(CDN_ROOT).map(c => c.key).includes(COOKIE_NAME)) {
         // Log in
         await loginToCdn()
     }
 
     const options = {
         method: 'POST',
-        uri: 'https://cdn.dovatvis.nl/upload',
+        uri: CDN_PATHS.upload,
         formData: {
             files: createFileObjects(files), // Add provided files
             time: expires // Set expiry time
@@ -47,7 +54,7 @@ async function loginToCdn() {
 
     const options = {
         method: 'POST',
-        uri: 'https://cdn.dovatvis.nl/login',
+        uri: CDN_PATHS.login,
         formData: {
             name: CDN_NAME, // Set application name
             secret // Set secret

@@ -5,6 +5,8 @@ import {addUrl, showError} from "./Results";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUpload} from "@fortawesome/free-solid-svg-icons";
 
+const UPLOAD_PATH = '/upload'
+
 export function UploadButton(props){
     const onDrop = useCallback(acceptedFiles => {
         // Add files to form data
@@ -14,7 +16,7 @@ export function UploadButton(props){
         })
 
         // Make a request to the backend, i.e. upload the files
-        fetch('/upload', {
+        fetch(UPLOAD_PATH, {
             method: 'POST',
             body: formData
         }).then(r => r.json()).then(data => {
