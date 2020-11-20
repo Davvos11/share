@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Bootstrap from 'react-bootstrap'
+import _ from 'lodash'
 
 function addUrl(url) {
     const currentState = [...this.state.urls]
@@ -8,7 +9,9 @@ function addUrl(url) {
 }
 
 function showError(error) {
-    this.setState({error})
+    const currentState = [...this.state.errors]
+    currentState.push(error)
+    this.setState({errors: currentState})
 }
 
 export class Results extends React.Component {
@@ -16,7 +19,7 @@ export class Results extends React.Component {
         super(props);
         this.state = {
             urls: [],
-            error: ''
+            errors: []
         }
 
         // Bind update functions
@@ -27,16 +30,22 @@ export class Results extends React.Component {
     render() {
         // Show resulting URLS
         return(<div style={{width: "100%"}}>
-            <Bootstrap.Alert variant="danger" dismissible show={this.state.error !== ''}
-                             onClose={() => {this.setState({error: ''})}}>
-                {this.state.error}
-            </Bootstrap.Alert>
+            {this.state.errors.map(error =>
+                <Bootstrap.Alert variant="danger" dismissible onClose={() => {this.hideError(error)}} key={error}>
+                {error}
+            </Bootstrap.Alert>)}
             <Bootstrap.ListGroup>
                 {this.state.urls.map(url => <Bootstrap.ListGroupItem key={url}>
                     <a href={url} target="_blank" rel="noreferrer">{url}</a>
                 </Bootstrap.ListGroupItem>)}
             </Bootstrap.ListGroup>
         </div>)
+    }
+
+    hideError = error => {
+        const currentState = [...this.state.errors]
+        const newState = _.difference(currentState, [error])
+        this.setState({errors: newState})
     }
 }
 

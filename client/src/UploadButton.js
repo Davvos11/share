@@ -6,9 +6,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUpload} from "@fortawesome/free-solid-svg-icons";
 
 const UPLOAD_PATH = '/upload'
+const MAX_SIZE = '90000000'
 
 export function UploadButton(props){
-    const onDrop = useCallback(acceptedFiles => {
+    const onDropAccepted = useCallback(acceptedFiles => {
         // Add files to form data
         const formData  = new FormData();
         acceptedFiles.forEach(file => {
@@ -27,13 +28,19 @@ export function UploadButton(props){
         });
     }, [])
 
+    const onDropRejected = useCallback(rejectedFiles => {
+        rejectedFiles.forEach(rejection => {
+            showError(`${rejection.file.name} cannot be uploaded: ${rejection.errors.map(e => e.message).join(" ")}`)
+        })
+    }, [])
+
     const {
         getRootProps,
         getInputProps,
         isDragActive,
         isDragAccept,
         isDragReject
-    } = useDropzone({onDrop});
+    } = useDropzone({onDropAccepted, onDropRejected, maxSize: MAX_SIZE});
 
     return (
         <div className="upload-container" style={{height: "90%", cursor: "pointer"}}>
