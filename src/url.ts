@@ -1,8 +1,23 @@
 import random from 'random';
+import fs from 'fs'
+import path from "path";
+
+const DICT_LOCATION = path.join(path.dirname('..'), 'dictionary')
 
 const DE = "de";
-const NOUNS = ["tools", "units", "devices"];
-const ADJECTIVES = ["nice", "getoolde", "master"]
+const NOUNS = await readFileIntoArray(path.join(DICT_LOCATION, 'nouns.txt'));
+const ADJECTIVES = await readFileIntoArray(path.join(DICT_LOCATION, 'adjectives.txt'));
+
+async function readFileIntoArray(filename: string) {
+    return new Promise<string[]>(((resolve, reject) => {
+        // Read file
+        fs.readFile(filename, (err, data) => {
+            if (err) reject(err);
+            // Return array
+            resolve(data.toString().split("\n"));
+        });
+    }))
+}
 
 export async function generateUrlsForFiles(cdnUrls: string[], expiresAt: number, db: typeof import("./database")) {
     const urls = []
