@@ -77,7 +77,7 @@ function de(multiChance: number) {
 function adjectives() {
     let result = capitalise(getAdjective())
     if (random.float(0, 1) < 0.2) {
-        if (random.float(0, 1) < 0.5) result += DE
+        if (random.float(0, 1) < 0.5) result += capitalise(DE)
         result += capitalise(getAdjective(0.5))
         if (random.float(0, 1) < 0.3) {
             result += capitalise(getAdjective(0.1))
