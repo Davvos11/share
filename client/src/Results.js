@@ -26,13 +26,15 @@ export class Results extends React.Component {
 
     render() {
         // Show resulting URLS
-        return(<div>
+        return(<div style={{width: "100%"}}>
             <Bootstrap.Alert variant="danger" dismissible show={this.state.error !== ''}
                              onClose={() => {this.setState({error: ''})}}>
                 {this.state.error}
             </Bootstrap.Alert>
             <Bootstrap.ListGroup>
-                {this.state.urls.map(url => <Bootstrap.ListGroupItem key={url}><a href={url}>{url}</a></Bootstrap.ListGroupItem>)}
+                {this.state.urls.map(url => <Bootstrap.ListGroupItem key={url}>
+                    <a href={url} target="_blank" rel="noreferrer">{url}</a>
+                </Bootstrap.ListGroupItem>)}
             </Bootstrap.ListGroup>
         </div>)
     }

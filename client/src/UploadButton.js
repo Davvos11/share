@@ -2,6 +2,8 @@ import React, {useCallback} from 'react';
 import styled from 'styled-components';
 import {useDropzone} from "react-dropzone";
 import {addUrl, showError} from "./Results";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUpload} from "@fortawesome/free-solid-svg-icons";
 
 export function UploadButton(props){
     const onDrop = useCallback(acceptedFiles => {
@@ -32,18 +34,17 @@ export function UploadButton(props){
     } = useDropzone({onDrop});
 
     return (
-        <div>
-            <div className="container">
-                <Container {...getRootProps({isDragActive, isDragAccept, isDragReject})}>
-                    <input {...getInputProps()} />
-                    <p>Drag 'n' drop some files here, or click to select files</p>
-                </Container>
-            </div>
+        <div className="upload-container" style={{height: "90%", cursor: "pointer"}}>
+            <Container {...getRootProps({isDragActive, isDragAccept, isDragReject})}>
+                <input {...getInputProps()} />
+                <FontAwesomeIcon icon={faUpload} size="4x"/>
+                <p>Drop some files, or click <u>here</u> to select files</p>
+            </Container>
         </div>
     );
 }
 
-const getColor = (props) => {
+const getBorderColour = (props) => {
     if (props.isDragAccept) {
         return '#00e676';
     }
@@ -56,18 +57,33 @@ const getColor = (props) => {
     return '#eeeeee';
 }
 
+const getColour = (props) => {
+    if (props.isDragAccept) {
+        return '#047100';
+    }
+    if (props.isDragReject) {
+        return '#ff1744';
+    }
+    if (props.isDragActive) {
+        return '#2196f3';
+    }
+    return '#bdbdbd';
+}
+
 const Container = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
   padding: 20px;
   border-width: 2px;
   border-radius: 2px;
-  border-color: ${props => getColor(props)};
+  border-color: ${props => getBorderColour(props)};
+  color: ${props => getColour(props)};
   border-style: dashed;
   background-color: #fafafa;
-  color: #bdbdbd;
   outline: none;
   transition: border .24s ease-in-out;
+  height: 100%;
 `;
