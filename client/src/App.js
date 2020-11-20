@@ -15,7 +15,7 @@ export class App extends React.Component {
                             <p className="lead">Upload a file to get a URL.<br />
                             Uploads expire after one week.</p>
                         </Bootstrap.Col>
-                        <UploadButton />
+                        <Bootstrap.Col><UploadButton /></Bootstrap.Col>
                     </Bootstrap.Row>
                 </Bootstrap.Jumbotron>
             </Bootstrap.Col>
